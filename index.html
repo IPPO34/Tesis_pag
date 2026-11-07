@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestor de referencias para tesis</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f7f7f5;--card:#fff;--tx:#1f2328;--mut:#6b7280;--bd:#d9dbe0;--ac:#2f6f5e;--acx:#fff;--ok:#1d7a3c;--wa:#9a6700;--er:#b42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#16181b;--card:#1f2226;--tx:#e8e9eb;--mut:#9aa1ab;--bd:#343941;--ac:#5fb59c;--acx:#10231d;--ok:#5fcf86;--wa:#e3b341;--er:#ff7b72}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#16181b;--card:#1f2226;--tx:#e8e9eb;--mut:#9aa1ab;--bd:#343941;--ac:#5fb59c;--acx:#10231d;--ok:#5fcf86;--wa:#e3b341;--er:#ff7b72}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 2px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:14px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1}
+button,.btn{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}
+button.on,button.pri{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+input,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;font:inherit}
+.row{display:grid;grid-template-columns:1fr 110px;gap:8px}
+.item{border-top:1px solid var(--bd);padding:10px 0}
+.item:first-child{border-top:0}
+.item b{display:block}
+.m{color:var(--mut);font-size:13px;word-break:break-all}
+.m a{color:var(--ac)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;border:1px solid currentColor}
+.ok{color:var(--ok)}.wa{color:var(--wa)}.er{color:var(--er)}
+.sc{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
+.hide{display:none}
+#msg{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+#msg div{background:var(--ac);color:var(--acx);padding:8px 12px;border-radius:8px;margin-bottom:10px}
+.acts{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.acts button{padding:3px 9px;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>Gestor de referencias para tu tesis</h1>
+<div class="sub">Creencias y emociones alimentarias y conductas alimentarias de riesgo en adolescentes limeños</div>
+<div id="msg"></div>
+<div class="tabs"><button id="t1" class="on">Biblioteca</button><button id="t2">Revisar mi tesis</button><button id="t3">Copia de seguridad</button></div>
+
+<section id="p1">
+ <div class="card">
+  <b>Agregar artículo o estudio</b>
+  <label>Subir PDF (uno o varios): se rellenan título, autores, año y DOI</label>
+  <input type="file" id="pdf" accept="application/pdf" multiple>
+  <label>Título *</label><input id="title">
+  <div class="row"><div><label>Autores (Apellido, N.; Apellido, N.)</label><input id="authors" placeholder="García, M.; Quispe, L."></div>
+  <div><label>Año</label><input id="year" inputmode="numeric" maxlength="4"></div></div>
+  <label>Link o DOI</label><input id="url" placeholder="https://doi.org/…">
+  <div class="acts"><button class="pri" id="add">Guardar</button><button id="clr">Limpiar</button></div>
+ </div>
+ <div class="card">
+  <input id="q" placeholder="Buscar por título, autor o link…">
+  <div class="m" id="cnt" style="margin:8px 0"></div>
+  <div id="list"></div>
+ </div>
+</section>
+
+<section id="p2" class="hide">
+ <div class="card">
+  <b>Sube tu tesis</b>
+  <div class="m">Acepta PDF o texto. Compara con los artículos de tu biblioteca (usa Apellido y año de cada artículo).</div>
+  <label>PDF de la tesis</label><input type="file" id="tpdf" accept="application/pdf,text/plain">
+  <label>…o pega el texto aquí</label><textarea id="ttxt" rows="5"></textarea>
+  <div class="acts"><button class="pri" id="chk">Revisar citas y referencias</button></div>
+ </div>
+ <div id="res"></div>
+</section>
+
+<section id="p3" class="hide">
+ <div class="card">
+  <b>Copia de seguridad</b>
+  <div class="m">Tus datos se guardan solo en este navegador. Copia este texto y guárdalo; para restaurar, pégalo y pulsa Importar.</div>
+  <textarea id="bk" rows="8"></textarea>
+  <div class="acts"><button id="exp">Exportar</button><button id="imp">Importar (reemplaza)</button></div>
+ </div>
+</section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const N=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+let refs=[];try{refs=JSON.parse(localStorage.getItem("refs")||"[]")}catch(e){}
+let editId=null,pdfName="";
+function save(){try{localStorage.setItem("refs",JSON.stringify(refs))}catch(e){msg("No se pudo guardar en el navegador")}}
+function msg(t){const d=document.createElement("div");d.textContent=t;$("#msg").appendChild(d);setTimeout(()=>d.remove(),3500)}
+const doiOf=s=>{const m=(s||"").match(/10\.\d{4,9}\/[^\s"<>]+/i);return m?m[0].replace(/[.,;)]+$/,"").toLowerCase():""};
+const urlN=u=>(u||"").toLowerCase().replace(/^https?:\/\/(www\.)?/,"").replace(/[?#].*$/,"").replace(/\/$/,"");
+const sim=(a,b)=>{const A=new Set(N(a).split(" ")),B=new Set(N(b).split(" "));let i=0;A.forEach(x=>B.has(x)&&i++);return i/(A.size+B.size-i||1)};
+const findDup=(r,skip)=>refs.find(o=>o.id!==skip&&((r.doi&&o.doi===r.doi)||(r.url&&urlN(o.url)===urlN(r.url))||(r.title&&sim(o.title,r.title)>=.8)));
+const surname=a=>N((a||"").split(/;| y | & | and /)[0].split(",")[0]);
+
+if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"}
+async function pdfText(file,max){
+ const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+ let t="";const n=Math.min(pdf.numPages,max||1e9);
+ for(let i=1;i<=n;i++){const c=await(await pdf.getPage(i)).getTextContent();t+=c.items.map(x=>x.str).join(" ")+"\n"}
+ let title="";try{title=((await pdf.getMetadata()).info||{}).Title||""}catch(e){}
+ return{text:t,title}
+}
+
+function show(n){["1","2","3"].forEach(k=>{$("#p"+k).classList.toggle("hide",k!=n);$("#t"+k).classList.toggle("on",k==n)})}
+["1","2","3"].forEach(k=>$("#t"+k).onclick=()=>show(k));
+
+function fmtAuthors(s){
+ s=(s||"").replace(/[\d*†‡§¹²³∗]+/g,"");
+ const one=n=>{n=n.trim();if(!n)return"";let ap,nm;if(n.includes(",")){[ap,nm]=n.split(",").map(x=>x.trim())}else{const w=n.split(/\s+/);if(w.length<2)return n;ap=w.pop();nm=w.join(" ")}
+  const ini=(nm||"").split(/[\s.]+/).filter(Boolean).map(x=>x[0].toUpperCase()+".").join(" ");return ap+(ini?", "+ini:"")};
+ const out=[];
+ s.split(/;|\s+y\s+|\s+and\s+|&/).forEach(p=>{const c=(p.match(/,/g)||[]).length;(c>1?p.split(","):[p]).forEach(x=>out.push(one(x)))});
+ return out.filter(x=>x&&x.length<60).slice(0,8).join("; ")
+}
+function guessYear(t){
+ const cur=new Date().getFullYear();
+ for(const re of [/(?:©|copyright|publicad[oa]|published)\D{0,25}?((?:19|20)\d{2})/i,/(?:recibido|received|aceptado|accepted)\D{0,25}?((?:19|20)\d{2})/i]){const m=t.match(re);if(m&&+m[1]<=cur)return m[1]}
+ const c={};(t.match(/\b(?:19[89]\d|20[0-3]\d)\b/g)||[]).forEach(y=>{if(+y<=cur)c[y]=(c[y]||0)+1});
+ return Object.keys(c).sort((a,b)=>c[b]-c[a]||b-a)[0]||""
+}
+async function pdfInfo(f){
+ const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+ let info={};try{info=(await pdf.getMetadata()).info||{}}catch(e){}
+ let all="",lines=[];
+ for(let p=1;p<=Math.min(2,pdf.numPages);p++){
+  const its=(await(await pdf.getPage(p)).getTextContent()).items.filter(x=>x.str.trim());
+  all+=its.map(x=>x.str).join(" ")+"\n";
+  if(p===1)its.forEach(x=>{const y=Math.round(x.transform[5]),h=Math.round(Math.abs(x.transform[3])||x.height||0);const L=lines.find(l=>Math.abs(l.y-y)<=2);if(L){L.t+=" "+x.str;L.h=Math.max(L.h,h)}else lines.push({y,h,t:x.str})})
+ }
+ lines.sort((a,b)=>b.y-a.y);lines.forEach(l=>l.t=l.t.replace(/\s+/g," ").trim());
+ const cnt={};lines.forEach(l=>cnt[l.h]=(cnt[l.h]||0)+1);
+ const body=+Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]||0;
+ const top=lines.slice(0,18).filter(l=>!/^(?:\d+|.{0,3})$/.test(l.t));
+ const mx=Math.max(0,...top.map(l=>l.h));
+ let title="",authors="";
+ const bad=/\.(docx?|pdf|tex)\b|microsoft|untitled|^\s*\d+\s*$/i;
+ if(mx>body+1){
+  const i0=top.findIndex(l=>l.h>=mx-1);let i=i0;
+  while(i<top.length&&top[i].h>=mx-1){title+=(title?" ":"")+top[i].t;i++}
+  const stop=/resumen|abstract|universidad|university|facultad|faculty|departamento|department|@|doi|received|recibido|palabras clave|keywords|http/i;
+  for(let k=i;k<Math.min(i+4,top.length);k++){const t=top[k].t;if(stop.test(t))break;if(t.length<200&&/\p{L}{3,}/u.test(t)&&t.split(" ").length<=30){authors=t;break}}
+ }
+ const mt=(info.Title||"").trim(),ma=(info.Author||"").trim();
+ if(mt.length>10&&!bad.test(mt))title=mt;
+ if(ma.length>4&&!/microsoft|admin|user|unknown|^\w+$/i.test(ma))authors=ma;
+ if(!title)title=f.name.replace(/\.pdf$/i,"").replace(/[_-]+/g," ");
+ const d=doiOf(all+" "+(info.Subject||"")+" "+(info.Keywords||""));
+ return{title:title.replace(/\s+/g," ").trim(),authors:fmtAuthors(authors),year:guessYear(all),doi:d}
+}
+$("#pdf").onchange=async e=>{
+ const fs=[...e.target.files];if(!fs.length)return;
+ if(fs.length===1){
+  pdfName=fs[0].name;
+  try{
+   const d=await pdfInfo(fs[0]);
+   if(d.title)$("#title").value=d.title;
+   if(d.authors)$("#authors").value=d.authors;
+   if(d.year)$("#year").value=d.year;
+   if(d.doi)$("#url").value="https://doi.org/"+d.doi;
+   msg("PDF leído. Revisa y corrige los datos antes de guardar.")
+  }catch(err){msg("No se pudo leer el PDF; completa los datos a mano.")}
+  return
+ }
+ let ok=0,dup=0,bad=0;
+ for(const f of fs){
+  try{
+   const d=await pdfInfo(f);
+   const r={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),title:d.title,authors:d.authors,year:d.year,url:d.doi?"https://doi.org/"+d.doi:"",doi:d.doi,file:f.name,added:Date.now()};
+   if(findDup(r)){dup++;continue}
+   refs.unshift(r);ok++
+  }catch(err){bad++}
+ }
+ save();render();e.target.value="";
+ msg(ok+" agregado(s), "+dup+" repetido(s)"+(bad?", "+bad+" con error":"")+". Revisa autores y año con Editar.")
+};
+
+function clearForm(){["title","authors","year","url","pdf"].forEach(i=>$("#"+i).value="");pdfName="";editId=null;$("#add").textContent="Guardar"}
+$("#clr").onclick=clearForm;
+$("#add").onclick=()=>{
+ const r={id:editId||Date.now().toString(36),title:$("#title").value.trim(),authors:$("#authors").value.trim(),year:$("#year").value.trim(),url:$("#url").value.trim(),file:pdfName,added:Date.now()};
+ if(!r.title)return msg("Escribe el título");
+ r.doi=doiOf(r.url);
+ const d=findDup(r,editId);
+ if(d&&!confirm("Parece repetido con: «"+d.title+"». ¿Guardar igual?"))return;
+ if(editId){const i=refs.findIndex(o=>o.id===editId);r.added=refs[i].added;r.file=r.file||refs[i].file;refs[i]=r}else refs.unshift(r);
+ save();clearForm();render();msg("Guardado")
+};
+
+function render(){
+ const q=N($("#q").value);
+ const l=refs.filter(r=>!q||N(r.title+" "+r.authors+" "+r.url).includes(q));
+ $("#cnt").textContent=refs.length+" guardado(s)"+(q?" · "+l.length+" coinciden":"");
+ $("#list").innerHTML=l.map(r=>`<div class="item"><b>${esc(r.title)}</b><div class="m">${esc(r.authors)}${r.year?" ("+esc(r.year)+")":""}${r.file?" · PDF: "+esc(r.file):""}</div>${r.url?`<div class="m"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>`:""}<div class="acts"><button data-e="${r.id}">Editar</button><button data-d="${r.id}">Borrar</button></div></div>`).join("")||'<div class="m">Aún no hay artículos.</div>'
+}
+$("#q").oninput=render;
+$("#list").onclick=e=>{
+ const d=e.target.dataset.d,ed=e.target.dataset.e;
+ if(d&&confirm("¿Borrar este artículo?")){refs=refs.filter(r=>r.id!==d);save();render()}
+ if(ed){const r=refs.find(x=>x.id===ed);editId=ed;$("#title").value=r.title;$("#authors").value=r.authors;$("#year").value=r.year;$("#url").value=r.url;pdfName=r.file||"";$("#add").textContent="Actualizar";scrollTo({top:0,behavior:"smooth"})}
+};
+
+$("#chk").onclick=async()=>{
+ let text=$("#ttxt").value;const f=$("#tpdf").files[0];
+ $("#res").innerHTML='<div class="card m">Analizando…</div>';
+ try{if(f){text=/pdf$/i.test(f.name)?(await pdfText(f)).text:await f.text()}}catch(e){return $("#res").innerHTML='<div class="card er">No se pudo leer el archivo.</div>'}
+ if(!text.trim())return $("#res").innerHTML='<div class="card er">Sube un archivo o pega texto.</div>';
+ if(!refs.length)return $("#res").innerHTML='<div class="card er">Tu biblioteca está vacía.</div>';
+ const ms=[...text.matchAll(/referencias(?: bibliogr[aá]ficas)?|bibliograf[ií]a|references/gi)].filter(m=>m.index>text.length*.3);
+ const cut=ms.length?ms[ms.length-1].index:-1;
+ const body=cut>0?text.slice(0,cut):text,rt=cut>0?text.slice(cut):"";
+ const bN=N(body),rN=N(rt);
+ let h="";
+ if(cut<0)h+='<div class="card wa">No encontré una sección «Referencias» o «Bibliografía»; solo se revisaron citas en el texto.</div>';
+ const rows=refs.map(r=>{
+  const s=surname(r.authors),y=r.year;
+  let cited=false;
+  if(s&&y){let i=-1;while((i=bN.indexOf(s,i+1))>=0){if(bN.slice(i,i+s.length+90).includes(y)){cited=true;break}}}
+  const inRef=cut>0&&((r.doi&&rt.toLowerCase().includes(r.doi))||rN.includes(N(r.title).split(" ").slice(0,6).join(" "))||(s&&y&&rN.includes(s)&&rN.includes(y)));
+  const t6=N(r.title).split(" ").slice(0,6).join(" ");
+  const reps=cut>0&&t6?rN.split(t6).length-1:0;
+  let st,c;
+  if(!s||!y){st="Falta autor o año en la biblioteca";c="wa"}
+  else if(cited&&(inRef||cut<0)){st="Citada"+(cut>0?" y referenciada":"");c="ok"}
+  else if(cited){st="Citada, pero no aparece en referencias";c="er"}
+  else if(inRef){st="En referencias, pero no citada en el texto";c="wa"}
+  else{st="No aparece en la tesis";c="m"}
+  if(reps>1)st+=" · repetida en referencias ("+reps+"×)";
+  return`<tr><td>${esc(r.title)}<div class="m">${esc(r.authors)} ${esc(y)}</div></td><td class="${c}">${st}</td></tr>`
+ });
+ h+=`<div class="card"><b>Tus artículos frente a la tesis</b><div class="sc"><table><tr><th>Artículo</th><th>Estado</th></tr>${rows.join("")}</table></div></div>`;
+ const known=refs.map(r=>surname(r.authors)+"|"+r.year);
+ const seen=new Set(),un=[];
+ for(const m of body.matchAll(/([A-ZÁÉÍÓÚÑ][\p{L}'’-]{2,})(?:\s+(?:et al\.?|y|&|and)\s+[A-ZÁÉÍÓÚÑ][\p{L}'’-]+)?,?\s*\(?((?:19|20)\d{2})[a-z]?\)?/gu)){
+  const s=N(m[1]),k=s+"|"+m[2];
+  if(seen.has(k))continue;seen.add(k);
+  if(!known.some(x=>{const[a,b]=x.split("|");return b===m[2]&&a&&(a===s||a.startsWith(s+" "))}))un.push(m[1]+" "+m[2])
+ }
+ h+=`<div class="card"><b>Posibles citas que no están en tu biblioteca</b><div class="m">Detección aproximada: revisa a mano.</div><div style="margin-top:6px">${un.slice(0,80).map(x=>`<span class="tag wa" style="margin:2px">${esc(x)}</span>`).join(" ")||'<span class="ok">Ninguna detectada</span>'}</div></div>`;
+ const dois=(rt.match(/10\.\d{4,9}\/[^\s"<>]+/gi)||[]).map(x=>x.replace(/[.,;)]+$/,"").toLowerCase());
+ const dd=[...new Set(dois.filter((x,i)=>dois.indexOf(x)!==i))];
+ if(dd.length)h+=`<div class="card er"><b>DOI repetidos en tus referencias</b><div class="m">${dd.map(esc).join("<br>")}</div></div>`;
+ $("#res").innerHTML=h
+};
+
+$("#exp").onclick=()=>{$("#bk").value=JSON.stringify(refs)};
+$("#imp").onclick=()=>{try{const a=JSON.parse($("#bk").value);if(!Array.isArray(a))throw 0;if(!confirm("Se reemplazará tu biblioteca actual. ¿Continuar?"))return;refs=a;save();render();msg("Importado")}catch(e){msg("El texto no es una copia válida")}};
+render();
+</script>
+</body>
+</html>
