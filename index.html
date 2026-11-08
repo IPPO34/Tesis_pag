@@ -78,7 +78,7 @@ td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-ali
 <section id="p3" class="hide">
  <div class="card">
   <b>Copia de seguridad</b>
-  <div class="m">Tus datos se guardan solo en este navegador. Copia este texto y guárdalo; para restaurar, pégalo y pulsa Importar.</div>
+  <div class="m">Tus datos se guardan solo en este navegador (los PDF no van en la copia, solo sus datos). Copia este texto y guárdalo; para restaurar, pégalo y pulsa Importar.</div>
   <textarea id="bk" rows="8"></textarea>
   <div class="acts"><button id="exp">Exportar</button><button id="imp">Importar (reemplaza)</button></div>
  </div>
@@ -92,7 +92,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const N=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
 let refs=[];try{refs=JSON.parse(localStorage.getItem("refs")||"[]")}catch(e){}
-let editId=null,pdfName="";
+let editId=null,pdfName="",pendingFile=null;
 function save(){try{localStorage.setItem("refs",JSON.stringify(refs))}catch(e){msg("No se pudo guardar en el navegador")}}
 function msg(t){const d=document.createElement("div");d.textContent=t;$("#msg").appendChild(d);setTimeout(()=>d.remove(),3500)}
 const doiOf=s=>{const m=(s||"").match(/10\.\d{4,9}\/[^\s"<>]+/i);return m?m[0].replace(/[.,;)]+$/,"").toLowerCase():""};
@@ -110,6 +110,19 @@ async function pdfText(file,max){
  return{text:t,title}
 }
 
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open("tesis",1);r.onupgradeneeded=()=>r.result.createObjectStore("pdf");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+async function idbOp(mode,fn){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction("pdf",mode),q=fn(t.objectStore("pdf"));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)})}
+async function putPdf(id,f){try{await idbOp("readwrite",s=>s.put(f,id));return true}catch(e){return false}}
+async function getPdf(id){try{return await idbOp("readonly",s=>s.get(id))}catch(e){return null}}
+async function delPdf(id){try{await idbOp("readwrite",s=>s.delete(id))}catch(e){}}
+async function openPdf(id){
+ const f=await getPdf(id);if(!f)return msg("No se encontró el PDF en este navegador");
+ const u=URL.createObjectURL(f),o=document.createElement("div");
+ o.style.cssText="position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)";
+ o.innerHTML=`<div class="acts" style="padding:8px;margin:0"><button class="pri">Cerrar</button><a class="btn" target="_blank" rel="noopener" href="${u}" style="text-decoration:none">Abrir en pestaña nueva</a></div><iframe src="${u}" style="flex:1;border:0;width:100%"></iframe>`;
+ o.querySelector("button").onclick=()=>{o.remove();URL.revokeObjectURL(u)};
+ document.body.appendChild(o)
+}
 function show(n){["1","2","3"].forEach(k=>{$("#p"+k).classList.toggle("hide",k!=n);$("#t"+k).classList.toggle("on",k==n)})}
 ["1","2","3"].forEach(k=>$("#t"+k).onclick=()=>show(k));
 
@@ -159,7 +172,7 @@ async function pdfInfo(f){
 $("#pdf").onchange=async e=>{
  const fs=[...e.target.files];if(!fs.length)return;
  if(fs.length===1){
-  pdfName=fs[0].name;
+  pdfName=fs[0].name;pendingFile=fs[0];
   try{
    const d=await pdfInfo(fs[0]);
    if(d.title)$("#title").value=d.title;
@@ -176,22 +189,23 @@ $("#pdf").onchange=async e=>{
    const d=await pdfInfo(f);
    const r={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),title:d.title,authors:d.authors,year:d.year,url:d.doi?"https://doi.org/"+d.doi:"",doi:d.doi,file:f.name,added:Date.now()};
    if(findDup(r)){dup++;continue}
-   refs.unshift(r);ok++
+   r.hasPdf=await putPdf(r.id,f);refs.unshift(r);ok++
   }catch(err){bad++}
  }
  save();render();e.target.value="";
  msg(ok+" agregado(s), "+dup+" repetido(s)"+(bad?", "+bad+" con error":"")+". Revisa autores y año con Editar.")
 };
 
-function clearForm(){["title","authors","year","url","pdf"].forEach(i=>$("#"+i).value="");pdfName="";editId=null;$("#add").textContent="Guardar"}
+function clearForm(){["title","authors","year","url","pdf"].forEach(i=>$("#"+i).value="");pdfName="";pendingFile=null;editId=null;$("#add").textContent="Guardar"}
 $("#clr").onclick=clearForm;
-$("#add").onclick=()=>{
+$("#add").onclick=async()=>{
  const r={id:editId||Date.now().toString(36),title:$("#title").value.trim(),authors:$("#authors").value.trim(),year:$("#year").value.trim(),url:$("#url").value.trim(),file:pdfName,added:Date.now()};
  if(!r.title)return msg("Escribe el título");
  r.doi=doiOf(r.url);
  const d=findDup(r,editId);
  if(d&&!confirm("Parece repetido con: «"+d.title+"». ¿Guardar igual?"))return;
- if(editId){const i=refs.findIndex(o=>o.id===editId);r.added=refs[i].added;r.file=r.file||refs[i].file;refs[i]=r}else refs.unshift(r);
+ if(editId){const i=refs.findIndex(o=>o.id===editId);r.added=refs[i].added;r.file=r.file||refs[i].file;r.hasPdf=refs[i].hasPdf;refs[i]=r}else refs.unshift(r);
+ if(pendingFile){r.hasPdf=await putPdf(r.id,pendingFile);if(!r.hasPdf)msg("No se pudo guardar el PDF en el navegador")}
  save();clearForm();render();msg("Guardado")
 };
 
@@ -199,12 +213,13 @@ function render(){
  const q=N($("#q").value);
  const l=refs.filter(r=>!q||N(r.title+" "+r.authors+" "+r.url).includes(q));
  $("#cnt").textContent=refs.length+" guardado(s)"+(q?" · "+l.length+" coinciden":"");
- $("#list").innerHTML=l.map(r=>`<div class="item"><b>${esc(r.title)}</b><div class="m">${esc(r.authors)}${r.year?" ("+esc(r.year)+")":""}${r.file?" · PDF: "+esc(r.file):""}</div>${r.url?`<div class="m"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>`:""}<div class="acts"><button data-e="${r.id}">Editar</button><button data-d="${r.id}">Borrar</button></div></div>`).join("")||'<div class="m">Aún no hay artículos.</div>'
+ $("#list").innerHTML=l.map(r=>`<div class="item"><b>${esc(r.title)}</b><div class="m">${esc(r.authors)}${r.year?" ("+esc(r.year)+")":""}${r.file?" · PDF: "+esc(r.file):""}</div>${r.url?`<div class="m"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>`:""}<div class="acts">${r.hasPdf?`<button class="pri" data-v="${r.id}">Ver PDF</button>`:""}<button data-e="${r.id}">Editar</button><button data-d="${r.id}">Borrar</button></div></div>`).join("")||'<div class="m">Aún no hay artículos.</div>'
 }
 $("#q").oninput=render;
 $("#list").onclick=e=>{
- const d=e.target.dataset.d,ed=e.target.dataset.e;
- if(d&&confirm("¿Borrar este artículo?")){refs=refs.filter(r=>r.id!==d);save();render()}
+ const d=e.target.dataset.d,ed=e.target.dataset.e,v=e.target.dataset.v;
+ if(v)return openPdf(v);
+ if(d&&confirm("¿Borrar este artículo?")){refs=refs.filter(r=>r.id!==d);delPdf(d);save();render()}
  if(ed){const r=refs.find(x=>x.id===ed);editId=ed;$("#title").value=r.title;$("#authors").value=r.authors;$("#year").value=r.year;$("#url").value=r.url;pdfName=r.file||"";$("#add").textContent="Actualizar";scrollTo({top:0,behavior:"smooth"})}
 };
 
