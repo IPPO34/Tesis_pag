@@ -2,105 +2,112 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Gestor de referencias para tesis</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Tesis</title>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f7f7f5;--card:#fff;--tx:#1f2328;--mut:#6b7280;--bd:#d9dbe0;--ac:#2f6f5e;--acx:#fff;--ok:#1d7a3c;--wa:#9a6700;--er:#b42318}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#16181b;--card:#1f2226;--tx:#e8e9eb;--mut:#9aa1ab;--bd:#343941;--ac:#5fb59c;--acx:#10231d;--ok:#5fcf86;--wa:#e3b341;--er:#ff7b72}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#16181b;--card:#1f2226;--tx:#e8e9eb;--mut:#9aa1ab;--bd:#343941;--ac:#5fb59c;--acx:#10231d;--ok:#5fcf86;--wa:#e3b341;--er:#ff7b72}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
+:root{--bg:#fff5f9;--card:#fff;--tx:#3b1230;--mut:#8a6a7f;--bd:#f6d3e3;--ac:#d81b78;--acx:#fff;--ok:#1d7a3c;--wa:#9a6700;--er:#b42318}
+*{box-sizing:border-box}[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:860px;margin:0 auto;padding:16px}
-h1{font-size:20px;margin:0 0 2px}
-.sub{color:var(--mut);font-size:13px;margin-bottom:14px}
-.tabs{display:flex;gap:6px;margin-bottom:14px}
-.tabs button{flex:1}
-button,.btn{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}
-button.on,button.pri{background:var(--ac);color:var(--acx);border-color:var(--ac)}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
-label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
-input,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;font:inherit}
-.row{display:grid;grid-template-columns:1fr 110px;gap:8px}
-.item{border-top:1px solid var(--bd);padding:10px 0}
-.item:first-child{border-top:0}
-.item b{display:block}
-.m{color:var(--mut);font-size:13px;word-break:break-all}
-.m a{color:var(--ac)}
+h1,h2,h3,.bn{font-family:Georgia,"Times New Roman",serif;margin:0}
+button,.btn{background:#fff;color:var(--ac);border:1px solid var(--ac);border-radius:999px;padding:8px 16px;font:inherit;cursor:pointer}
+button.pri{background:linear-gradient(90deg,#ee4c93,#d81b78);color:#fff;border-color:transparent}
+button:disabled{opacity:.6}
+input,textarea{width:100%;background:#fff;color:var(--tx);border:1px solid var(--ac);border-radius:10px;padding:10px;font:inherit}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
+.card{background:var(--card);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 14px #d81b7820}
+.m{color:var(--mut);font-size:13px;word-break:break-word}.m a{color:var(--ac)}
+.er{color:var(--er)}.ok{color:var(--ok)}.wa{color:var(--wa)}
 .tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;border:1px solid currentColor}
-.ok{color:var(--ok)}.wa{color:var(--wa)}.er{color:var(--er)}
-.sc{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:13px}
-td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
-.hide{display:none}
-#msg{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
-#msg div{background:var(--ac);color:var(--acx);padding:8px 12px;border-radius:8px;margin-bottom:10px}
-.acts{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
-.acts button{padding:3px 9px;font-size:12px}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
+.acts{display:flex;gap:6px;flex-wrap:wrap}.acts button{padding:4px 12px;font-size:13px}
+#msg{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:99}#msg div{background:var(--ac);color:#fff;padding:8px 14px;border-radius:10px;margin-bottom:6px}
+#login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 10% 10%,#ffd3e6,transparent 50%),linear-gradient(135deg,#ffe4f0,#ffb3d3)}
+.lw{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:980px;width:100%;align-items:center}
+.lb h1{font-size:48px;color:#a3124f}.logo{font-size:56px}.tg{color:var(--ac);margin:4px 0 24px}.lb h2{font-size:32px;margin-bottom:10px}
+.lc{background:#fff;border-radius:20px;padding:28px;box-shadow:0 10px 40px #d81b7840}.lc h2{text-align:center;font-size:28px}.lc>p{text-align:center;margin:4px 0 8px}
+.pw{position:relative}.pw button{position:absolute;right:6px;top:5px;border:0;padding:4px 8px}
+.lc .pri,.lc .btn{width:100%;margin-top:12px;padding:12px}
+.ee{color:var(--ac);font-size:13px;margin:4px 0 0}
+#app{display:flex;min-height:100vh}
+.sb{width:230px;flex:none;background:linear-gradient(180deg,#b3195c,#e8508f 70%,#ff8cb8);color:#fff;padding:20px 14px;text-align:center}
+.bn{font-size:24px;display:block}.sb small{opacity:.85}
+.nav{display:flex;flex-direction:column;gap:6px;margin:24px 0}
+.nav button{background:transparent;color:#fff;border:0;text-align:left;border-radius:12px;padding:12px}
+.nav button.on{background:#ffffff33}
+.tip{background:#ffffff26;border-radius:14px;padding:14px;font-size:13px}
+.mn{flex:1;min-width:0;padding:16px 22px}
+header{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+header input{max-width:360px;border-radius:999px;border-color:var(--bd)}
+.av{margin-left:auto;width:40px;height:40px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:700}
+.hero{background:linear-gradient(120deg,#ffe0ee,#ffb8d6);border-radius:18px;padding:26px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.hero h1{font-size:32px}.big{font-size:70px}
+.g{display:grid;grid-template-columns:1fr 1fr 120px;gap:12px}
+.it{display:flex;gap:14px;border:1px solid var(--bd);border-radius:14px;padding:12px;margin-top:10px;align-items:center}
+.ic{width:70px;height:70px;flex:none;border-radius:12px;background:#ffe0ee;color:var(--ac);display:grid;place-items:center;font-weight:700}
+.tx{flex:1;min-width:0}.ac{text-align:right}.ac .acts{justify-content:flex-end;margin-top:6px}
+@media(max-width:760px){.lw{grid-template-columns:1fr}#app{flex-direction:column}.sb{width:auto}.nav{flex-direction:row;overflow-x:auto;margin:10px 0}.tip{display:none}.g{grid-template-columns:1fr}.it{flex-wrap:wrap}.ac{text-align:left}.ac .acts{justify-content:flex-start}.big{display:none}}
 </style>
 </head>
 <body>
-<main>
-<h1>Gestor de referencias para tu tesis</h1>
-<div class="sub">Creencias y emociones alimentarias y conductas alimentarias de riesgo en adolescentes limeños</div>
 <div id="msg"></div>
-<div class="tabs"><button id="t1" class="on">Biblioteca</button><button id="t2">Revisar mi tesis</button><button id="t3">Copia de seguridad</button></div>
 
-<section id="p1">
- <div class="card">
-  <b>Agregar artículo o estudio</b>
-  <label>Subir PDF (uno o varios): se rellenan título, autores, año y DOI</label>
-  <input type="file" id="pdf" accept="application/pdf" multiple>
-  <label>Título *</label><input id="title">
-  <div class="row"><div><label>Autores (Apellido, N.; Apellido, N.)</label><input id="authors" placeholder="García, M.; Quispe, L."></div>
-  <div><label>Año</label><input id="year" inputmode="numeric" maxlength="4"></div></div>
-  <label>Link o DOI</label><input id="url" placeholder="https://doi.org/…">
-  <div class="acts"><button class="pri" id="add">Guardar</button><button id="clr">Limpiar</button></div>
+<div id="login">
+ <div class="lw">
+  <div class="lb"><div class="logo">🎓</div><h1>Mi Tesis</h1><p class="tg">Organiza • Guarda • Avanza</p>
+   <h2>Tu asistente académico para una tesis exitosa</h2>
+   <p>Gestiona tus referencias, guarda tus investigaciones y avanza en tu tesis de forma fácil y eficiente.</p></div>
+  <form class="lc" id="lf" novalidate>
+   <h2>Iniciar sesión</h2><p class="m">Ingresa tus credenciales para continuar</p>
+   <label for="lu">👤 Usuario *</label><input id="lu" placeholder="Ingresa tu usuario" autocomplete="username">
+   <div class="ee" id="eu" hidden>⚠ El usuario es obligatorio</div>
+   <label for="lp">🔒 Contraseña *</label>
+   <div class="pw"><input id="lp" type="password" placeholder="Ingresa tu contraseña" autocomplete="current-password"><button type="button" id="eye">👁</button></div>
+   <div class="ee" id="ep" hidden>⚠ La contraseña es obligatoria</div>
+   <div class="ee" id="le"></div>
+   <button class="pri" id="go">Ingresar</button>
+   <p class="m" style="text-align:center"><a href="#" id="fp">¿Olvidaste tu contraseña?</a></p>
+   <button type="button" class="btn" id="vi">🏠 Volver al inicio</button>
+  </form>
  </div>
- <div class="card">
-  <input id="q" placeholder="Buscar por título, autor o link…">
-  <div class="m" id="cnt" style="margin:8px 0"></div>
-  <div id="list"></div>
- </div>
-</section>
+</div>
 
-<section id="p2" class="hide">
- <div class="card">
-  <b>Sube tu tesis</b>
-  <div class="m">Acepta PDF o texto. Compara con los artículos de tu biblioteca (usa Apellido y año de cada artículo).</div>
-  <label>PDF de la tesis</label><input type="file" id="tpdf" accept="application/pdf,text/plain">
-  <label>…o pega el texto aquí</label><textarea id="ttxt" rows="5"></textarea>
-  <div class="acts"><button class="pri" id="chk">Revisar citas y referencias</button></div>
+<div id="app" hidden>
+ <aside class="sb"><div class="logo">🎓</div><b class="bn">Mi Tesis</b><small>Organiza • Guarda • Avanza</small>
+  <nav class="nav"><button data-n="inicio">🏠 Inicio</button><button data-n="refs">📖 Mis Referencias</button><button data-n="pdfs">📄 Mis PDFs</button><button data-n="tesis">✨ Revisar Tesis</button><button data-n="config">⚙️ Configuración</button></nav>
+  <div class="tip">💡 Tu investigación comienza con una buena organización ♡</div></aside>
+ <div class="mn">
+  <header><input id="q" placeholder="Buscar en tus referencias…"><div class="av" id="av"></div></header>
+  <div class="hero" id="hero"><div><h1>Gestor de Referencias para tu Tesis</h1><p>Guarda tus artículos, PDFs y organiza tus ideas de forma fácil y eficiente.</p></div><div class="big">🎓📚</div></div>
+  <section class="card" id="fm"><h3>➕ Agregar artículo o estudio</h3><p class="m">Completa los datos o sube tu PDF y se rellenarán solos.</p>
+   <label>Subir PDF</label><input type="file" id="pdf" accept="application/pdf">
+   <div class="g"><div><label>Título *</label><input id="title" placeholder="Ej. Inteligencia Artificial en la Educación…"></div><div><label>Autores (Apellido, N.; Apellido, N.)</label><input id="authors" placeholder="García, M.; Quispe, L."></div><div><label>Año</label><input id="year" maxlength="4" inputmode="numeric" placeholder="YYYY"></div></div>
+   <label>Link o DOI</label><input id="url" placeholder="https://doi.org/…">
+   <div class="acts" style="margin-top:14px"><button class="pri" id="add">Guardar</button><button id="clr">Limpiar</button></div></section>
+  <section class="card" id="lst"><h3 id="lt"></h3><div id="list"></div></section>
+  <section id="tes" hidden><div class="card"><h3>Revisar mi tesis</h3><p class="m">Sube tu tesis en PDF: se guarda en tu cuenta y se compara con tus referencias.</p>
+   <label>PDF de la tesis</label><input type="file" id="tpdf" accept="application/pdf,text/plain">
+   <label>…o pega el texto</label><textarea id="ttxt" rows="4"></textarea>
+   <div class="acts" style="margin-top:12px"><button class="pri" id="chk">Revisar citas y referencias</button><button id="tr">Revisar la tesis guardada</button><button id="tv">Ver tesis guardada</button></div></div><div id="res"></div></section>
+  <section class="card" id="cfg" hidden><h3>Configuración</h3><p class="m" id="cu"></p><div class="acts"><button class="pri" id="out">Cerrar sesión</button></div></section>
  </div>
- <div id="res"></div>
-</section>
-
-<section id="p3" class="hide">
- <div class="card">
-  <b>Copia de seguridad</b>
-  <div class="m">Tus datos se guardan solo en este navegador (los PDF no van en la copia, solo sus datos). Copia este texto y guárdalo; para restaurar, pégalo y pulsa Importar.</div>
-  <textarea id="bk" rows="8"></textarea>
-  <div class="acts"><button id="exp">Exportar</button><button id="imp">Importar (reemplaza)</button></div>
- </div>
-</section>
-</main>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.78.0/dist/umd/supabase.js"></script>
 <script>
+const SUPABASE_URL="https://ekakbxghvppfmuqufawz.supabase.co",SUPABASE_KEY="sb_publishable_4BJG0YidqljuG9WywgMIBg_54FzwAk2",DOMINIO="@mitesis.app";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const N=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
-let refs=[];try{refs=JSON.parse(localStorage.getItem("refs")||"[]")}catch(e){}
-let editId=null,pdfName="",pendingFile=null;
-function save(){try{localStorage.setItem("refs",JSON.stringify(refs))}catch(e){msg("No se pudo guardar en el navegador")}}
-function msg(t){const d=document.createElement("div");d.textContent=t;$("#msg").appendChild(d);setTimeout(()=>d.remove(),3500)}
+function msg(t){const d=document.createElement("div");d.textContent=t;$("#msg").appendChild(d);setTimeout(()=>d.remove(),4000)}
 const doiOf=s=>{const m=(s||"").match(/10\.\d{4,9}\/[^\s"<>]+/i);return m?m[0].replace(/[.,;)]+$/,"").toLowerCase():""};
 const urlN=u=>(u||"").toLowerCase().replace(/^https?:\/\/(www\.)?/,"").replace(/[?#].*$/,"").replace(/\/$/,"");
 const sim=(a,b)=>{const A=new Set(N(a).split(" ")),B=new Set(N(b).split(" "));let i=0;A.forEach(x=>B.has(x)&&i++);return i/(A.size+B.size-i||1)};
-const findDup=(r,skip)=>refs.find(o=>o.id!==skip&&((r.doi&&o.doi===r.doi)||(r.url&&urlN(o.url)===urlN(r.url))||(r.title&&sim(o.title,r.title)>=.8)));
 const surname=a=>N((a||"").split(/;| y | & | and /)[0].split(",")[0]);
-
+let refs=[],uid=null,editId=null,pending=null,vista="inicio";
+const findDup=(r,skip)=>refs.find(o=>o.id!==skip&&((r.doi&&o.doi===r.doi)||(r.url&&urlN(o.url)===urlN(r.url))||(r.title&&sim(o.title,r.title)>=.8)));
 if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"}
 async function pdfText(file,max){
  const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
@@ -110,35 +117,6 @@ async function pdfText(file,max){
  return{text:t,title}
 }
 
-const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open("tesis",1);r.onupgradeneeded=()=>r.result.createObjectStore("pdf");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
-async function idbOp(mode,fn){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction("pdf",mode),q=fn(t.objectStore("pdf"));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)})}
-async function putPdf(id,f){try{await idbOp("readwrite",s=>s.put(f,id));return true}catch(e){return false}}
-async function getPdf(id){try{return await idbOp("readonly",s=>s.get(id))}catch(e){return null}}
-async function delPdf(id){try{await idbOp("readwrite",s=>s.delete(id))}catch(e){}}
-async function openPdf(id){
- const f=await getPdf(id);if(!f)return msg("No se encontró el PDF en este navegador");
- const o=document.createElement("div");
- o.style.cssText="position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)";
- o.innerHTML=`<div class="acts" style="padding:8px;margin:0;align-items:center"><button class="pri">Cerrar</button><span class="m" id="pgi">Cargando…</span></div><div style="flex:1;overflow:auto;padding:8px;background:var(--bd)"></div>`;
- o.querySelector("button").onclick=()=>o.remove();
- document.body.appendChild(o);
- const box=o.lastElementChild;
- try{
-  const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
-  o.querySelector("#pgi").textContent=pdf.numPages+" páginas";
-  for(let i=1;i<=pdf.numPages&&o.isConnected;i++){
-   const p=await pdf.getPage(i);
-   const w=Math.min(box.clientWidth-16,900),sc=w/p.getViewport({scale:1}).width,dpr=Math.min(devicePixelRatio||1,2);
-   const v=p.getViewport({scale:sc*dpr});
-   const c=document.createElement("canvas");c.width=v.width;c.height=v.height;
-   c.style.cssText="display:block;margin:0 auto 8px;width:"+w+"px;max-width:100%;height:auto;background:#fff";
-   box.appendChild(c);
-   await p.render({canvasContext:c.getContext("2d"),viewport:v}).promise
-  }
- }catch(e){box.textContent="No se pudo mostrar el PDF."}
-}
-function show(n){["1","2","3"].forEach(k=>{$("#p"+k).classList.toggle("hide",k!=n);$("#t"+k).classList.toggle("on",k==n)})}
-["1","2","3"].forEach(k=>$("#t"+k).onclick=()=>show(k));
 
 function fmtAuthors(s){
  s=(s||"").replace(/[\d*†‡§¹²³∗]+/g,"");
@@ -183,66 +161,30 @@ async function pdfInfo(f){
  const d=doiOf(all+" "+(info.Subject||"")+" "+(info.Keywords||""));
  return{title:title.replace(/\s+/g," ").trim(),authors:fmtAuthors(authors),year:guessYear(all),doi:d}
 }
-$("#pdf").onchange=async e=>{
- const fs=[...e.target.files];if(!fs.length)return;
- if(fs.length===1){
-  pdfName=fs[0].name;pendingFile=fs[0];
-  try{
-   const d=await pdfInfo(fs[0]);
-   if(d.title)$("#title").value=d.title;
-   if(d.authors)$("#authors").value=d.authors;
-   if(d.year)$("#year").value=d.year;
-   if(d.doi)$("#url").value="https://doi.org/"+d.doi;
-   msg("PDF leído. Revisa y corrige los datos antes de guardar.")
-  }catch(err){msg("No se pudo leer el PDF; completa los datos a mano.")}
-  return
- }
- let ok=0,dup=0,bad=0;
- for(const f of fs){
-  try{
-   const d=await pdfInfo(f);
-   const r={id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),title:d.title,authors:d.authors,year:d.year,url:d.doi?"https://doi.org/"+d.doi:"",doi:d.doi,file:f.name,added:Date.now()};
-   if(findDup(r)){dup++;continue}
-   r.hasPdf=await putPdf(r.id,f);refs.unshift(r);ok++
-  }catch(err){bad++}
- }
- save();render();e.target.value="";
- msg(ok+" agregado(s), "+dup+" repetido(s)"+(bad?", "+bad+" con error":"")+". Revisa autores y año con Editar.")
-};
 
-function clearForm(){["title","authors","year","url","pdf"].forEach(i=>$("#"+i).value="");pdfName="";pendingFile=null;editId=null;$("#add").textContent="Guardar"}
-$("#clr").onclick=clearForm;
-$("#add").onclick=async()=>{
- const r={id:editId||Date.now().toString(36),title:$("#title").value.trim(),authors:$("#authors").value.trim(),year:$("#year").value.trim(),url:$("#url").value.trim(),file:pdfName,added:Date.now()};
- if(!r.title)return msg("Escribe el título");
- r.doi=doiOf(r.url);
- const d=findDup(r,editId);
- if(d&&!confirm("Parece repetido con: «"+d.title+"». ¿Guardar igual?"))return;
- if(editId){const i=refs.findIndex(o=>o.id===editId);r.added=refs[i].added;r.file=r.file||refs[i].file;r.hasPdf=refs[i].hasPdf;refs[i]=r}else refs.unshift(r);
- if(pendingFile){r.hasPdf=await putPdf(r.id,pendingFile);if(!r.hasPdf)msg("No se pudo guardar el PDF en el navegador")}
- save();clearForm();render();msg("Guardado")
-};
-
-function render(){
- const q=N($("#q").value);
- const l=refs.filter(r=>!q||N(r.title+" "+r.authors+" "+r.url).includes(q));
- $("#cnt").textContent=refs.length+" guardado(s)"+(q?" · "+l.length+" coinciden":"");
- $("#list").innerHTML=l.map(r=>`<div class="item"><b>${esc(r.title)}</b><div class="m">${esc(r.authors)}${r.year?" ("+esc(r.year)+")":""}${r.file?" · PDF: "+esc(r.file):""}</div>${r.url?`<div class="m"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>`:""}<div class="acts">${r.hasPdf?`<button class="pri" data-v="${r.id}">Ver PDF</button>`:""}<button data-e="${r.id}">Editar</button><button data-d="${r.id}">Borrar</button></div></div>`).join("")||'<div class="m">Aún no hay artículos.</div>'
+async function viewPdf(f){
+ const o=document.createElement("div");
+ o.style.cssText="position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)";
+ o.innerHTML=`<div class="acts" style="padding:8px;margin:0;align-items:center"><button class="pri">Cerrar</button><span class="m" id="pgi">Cargando…</span></div><div style="flex:1;overflow:auto;padding:8px;background:var(--bd)"></div>`;
+ o.querySelector("button").onclick=()=>o.remove();
+ document.body.appendChild(o);
+ const box=o.lastElementChild;
+ try{
+  const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+  o.querySelector("#pgi").textContent=pdf.numPages+" páginas";
+  for(let i=1;i<=pdf.numPages&&o.isConnected;i++){
+   const p=await pdf.getPage(i);
+   const w=Math.min(box.clientWidth-16,900),sc=w/p.getViewport({scale:1}).width,dpr=Math.min(devicePixelRatio||1,2);
+   const v=p.getViewport({scale:sc*dpr});
+   const c=document.createElement("canvas");c.width=v.width;c.height=v.height;
+   c.style.cssText="display:block;margin:0 auto 8px;width:"+w+"px;max-width:100%;height:auto;background:#fff";
+   box.appendChild(c);
+   await p.render({canvasContext:c.getContext("2d"),viewport:v}).promise
+  }
+ }catch(e){box.textContent="No se pudo mostrar el PDF."}
 }
-$("#q").oninput=render;
-$("#list").onclick=e=>{
- const d=e.target.dataset.d,ed=e.target.dataset.e,v=e.target.dataset.v;
- if(v)return openPdf(v);
- if(d&&confirm("¿Borrar este artículo?")){refs=refs.filter(r=>r.id!==d);delPdf(d);save();render()}
- if(ed){const r=refs.find(x=>x.id===ed);editId=ed;$("#title").value=r.title;$("#authors").value=r.authors;$("#year").value=r.year;$("#url").value=r.url;pdfName=r.file||"";$("#add").textContent="Actualizar";scrollTo({top:0,behavior:"smooth"})}
-};
 
-$("#chk").onclick=async()=>{
- let text=$("#ttxt").value;const f=$("#tpdf").files[0];
- $("#res").innerHTML='<div class="card m">Analizando…</div>';
- try{if(f){text=/pdf$/i.test(f.name)?(await pdfText(f)).text:await f.text()}}catch(e){return $("#res").innerHTML='<div class="card er">No se pudo leer el archivo.</div>'}
- if(!text.trim())return $("#res").innerHTML='<div class="card er">Sube un archivo o pega texto.</div>';
- if(!refs.length)return $("#res").innerHTML='<div class="card er">Tu biblioteca está vacía.</div>';
+function analizar(text){
  const ms=[...text.matchAll(/referencias(?: bibliogr[aá]ficas)?|bibliograf[ií]a|references/gi)].filter(m=>m.index>text.length*.3);
  const cut=ms.length?ms[ms.length-1].index:-1;
  const body=cut>0?text.slice(0,cut):text,rt=cut>0?text.slice(cut):"";
@@ -277,12 +219,124 @@ $("#chk").onclick=async()=>{
  const dois=(rt.match(/10\.\d{4,9}\/[^\s"<>]+/gi)||[]).map(x=>x.replace(/[.,;)]+$/,"").toLowerCase());
  const dd=[...new Set(dois.filter((x,i)=>dois.indexOf(x)!==i))];
  if(dd.length)h+=`<div class="card er"><b>DOI repetidos en tus referencias</b><div class="m">${dd.map(esc).join("<br>")}</div></div>`;
- $("#res").innerHTML=h
-};
+ return h
+}
 
-$("#exp").onclick=()=>{$("#bk").value=JSON.stringify(refs)};
-$("#imp").onclick=()=>{try{const a=JSON.parse($("#bk").value);if(!Array.isArray(a))throw 0;if(!confirm("Se reemplazará tu biblioteca actual. ¿Continuar?"))return;refs=a;save();render();msg("Importado")}catch(e){msg("El texto no es una copia válida")}};
-render();
+async function entrar(){
+ const u=$("#lu").value.trim().toLowerCase(),p=$("#lp").value;
+ $("#eu").hidden=!!u;$("#ep").hidden=!!p;$("#le").textContent="";
+ if(!u||!p)return;
+ if(SUPABASE_URL.includes("TU-PROYECTO")||SUPABASE_KEY.includes("TU_ANON_KEY"))return $("#le").textContent="Falta pegar tu URL y clave de Supabase en index.html";
+ $("#go").disabled=true;
+ const{error}=await sb.auth.signInWithPassword({email:u+DOMINIO,password:p});
+ $("#go").disabled=false;
+ if(error)return $("#le").textContent="Usuario o contraseña incorrectos";
+ arrancar()
+}
+async function arrancar(){
+ let s=null;try{s=(await sb.auth.getSession()).data.session}catch(e){}
+ $("#login").hidden=!!s;$("#app").hidden=!s;
+ if(!s)return;
+ uid=s.user.id;$("#av").textContent=s.user.email[0].toUpperCase();$("#cu").textContent="Sesión iniciada como "+s.user.email.replace(DOMINIO,"");
+ await cargar();ir("inicio")
+}
+async function cargar(){
+ const{data,error}=await sb.from("referencias").select("*").order("created_at",{ascending:false});
+ if(error)msg("Error: "+error.message);
+ refs=data||[];pintar()
+}
+function ir(v){
+ vista=v;$("#hero").hidden=$("#fm").hidden=v!=="inicio";
+ $("#lst").hidden=!["inicio","refs","pdfs"].includes(v);
+ $("#tes").hidden=v!=="tesis";$("#cfg").hidden=v!=="config";
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.n===v));
+ pintar()
+}
+function pintar(){
+ const q=N($("#q").value);
+ const l=refs.filter(r=>(vista!=="pdfs"||r.file_path)&&(!q||N(r.title+" "+r.authors+" "+r.url).includes(q)));
+ $("#lt").textContent=(vista==="pdfs"?"Mis PDFs":"Mis Referencias Guardadas")+" ("+l.length+")";
+ $("#list").innerHTML=l.map(r=>`<div class="it"><div class="ic">${r.file_path?"PDF":"DOC"}</div><div class="tx"><b>${esc(r.title)}</b><div class="m">${esc(r.authors)}${r.year?" | "+esc(r.year):""}</div>${r.url?`<div class="m"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a></div>`:""}</div><div class="ac"><div class="m">Guardado: ${new Date(r.created_at).toLocaleDateString("es-PE")}</div><div class="acts">${r.file_path?`<button data-v="${r.id}">👁 Ver</button><button data-g="${r.id}">⬇ Descargar</button>`:""}<button data-e="${r.id}">Editar</button><button data-d="${r.id}">🗑</button></div></div></div>`).join("")||'<div class="m" style="margin-top:10px">Aún no hay artículos.</div>'
+}
+function limpiar(){["title","authors","year","url","pdf"].forEach(i=>$("#"+i).value="");pending=null;editId=null;$("#add").textContent="Guardar"}
+async function guardar(){
+ const r={title:$("#title").value.trim(),authors:$("#authors").value.trim(),year:$("#year").value.trim(),url:$("#url").value.trim()};
+ if(!r.title)return msg("Escribe el título");
+ r.doi=doiOf(r.url);
+ const d=findDup(r,editId);
+ if(d&&!confirm("Parece repetido con: «"+d.title+"». ¿Guardar igual?"))return;
+ $("#add").disabled=true;
+ try{
+  let id=editId;
+  if(editId){const x=await sb.from("referencias").update(r).eq("id",editId);if(x.error)throw x.error}
+  else{const x=await sb.from("referencias").insert(r).select().single();if(x.error)throw x.error;id=x.data.id}
+  if(pending){
+   const path=uid+"/"+id+".pdf";
+   const x=await sb.storage.from("pdfs").upload(path,pending,{upsert:true,contentType:"application/pdf"});
+   if(x.error)throw x.error;
+   await sb.from("referencias").update({file_path:path}).eq("id",id)
+  }
+  limpiar();await cargar();msg("Guardado")
+ }catch(e){msg("Error: "+e.message)}
+ $("#add").disabled=false
+}
+$("#pdf").onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;pending=f;
+ try{
+  const d=await pdfInfo(f);
+  if(d.title)$("#title").value=d.title;
+  if(d.authors)$("#authors").value=d.authors;
+  if(d.year)$("#year").value=d.year;
+  if(d.doi)$("#url").value="https://doi.org/"+d.doi;
+  msg("PDF leído. Revisa los datos antes de guardar.")
+ }catch(err){msg("No se pudo leer el PDF; completa los datos a mano.")}
+};
+$("#list").onclick=async e=>{
+ const b=e.target.closest("button");if(!b)return;
+ const D=b.dataset,r=refs.find(x=>x.id===(D.v||D.g||D.e||D.d));if(!r)return;
+ if(D.v||D.g){
+  const x=await sb.storage.from("pdfs").download(r.file_path);
+  if(x.error)return msg("No se pudo abrir el PDF");
+  if(D.v)return viewPdf(x.data);
+  const a=document.createElement("a");a.href=URL.createObjectURL(x.data);a.download=r.title.slice(0,60)+".pdf";a.click();return
+ }
+ if(D.e){editId=r.id;$("#title").value=r.title;$("#authors").value=r.authors||"";$("#year").value=r.year||"";$("#url").value=r.url||"";$("#add").textContent="Actualizar";ir("inicio");scrollTo(0,0)}
+ if(D.d&&confirm("¿Borrar este artículo y su PDF?")){
+  if(r.file_path)await sb.storage.from("pdfs").remove([r.file_path]);
+  await sb.from("referencias").delete().eq("id",r.id);cargar()
+ }
+};
+async function revisarTesis(){
+ let text=$("#ttxt").value;const f=$("#tpdf").files[0],out=$("#res");
+ out.innerHTML='<div class="card m">Analizando…</div>';
+ try{
+  if(f){
+   const pdf=/pdf$/i.test(f.name);
+   text=pdf?(await pdfText(f)).text:await f.text();
+   if(pdf){const x=await sb.storage.from("pdfs").upload(uid+"/tesis.pdf",f,{upsert:true,contentType:"application/pdf"});msg(x.error?"No se pudo guardar la tesis":"Tesis guardada en tu cuenta")}
+  }
+ }catch(e){return out.innerHTML='<div class="card er">No se pudo leer el archivo.</div>'}
+ if(!text.trim())return out.innerHTML='<div class="card er">Sube un archivo o pega texto.</div>';
+ if(!refs.length)return out.innerHTML='<div class="card er">Tu biblioteca está vacía.</div>';
+ out.innerHTML=analizar(text)
+}
+async function guardada(ver){
+ const x=await sb.storage.from("pdfs").download(uid+"/tesis.pdf");
+ if(x.error)return msg("Aún no hay tesis guardada");
+ if(ver)return viewPdf(x.data);
+ if(!refs.length)return msg("Tu biblioteca está vacía");
+ $("#res").innerHTML='<div class="card m">Analizando…</div>';
+ try{$("#res").innerHTML=analizar((await pdfText(x.data)).text)}catch(e){$("#res").innerHTML='<div class="card er">No se pudo leer la tesis.</div>'}
+}
+$("#lf").onsubmit=e=>{e.preventDefault();entrar()};
+$("#eye").onclick=()=>{const p=$("#lp");p.type=p.type==="password"?"text":"password"};
+$("#fp").onclick=e=>{e.preventDefault();msg("Cambia la contraseña desde el panel de Supabase: Authentication → Users")};
+$("#vi").onclick=()=>{$("#lu").value=$("#lp").value="";$("#eu").hidden=$("#ep").hidden=true;$("#le").textContent=""};
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>ir(b.dataset.n));
+$("#q").oninput=pintar;$("#add").onclick=guardar;$("#clr").onclick=limpiar;
+$("#chk").onclick=revisarTesis;$("#tr").onclick=()=>guardada(false);$("#tv").onclick=()=>guardada(true);
+$("#out").onclick=async()=>{await sb.auth.signOut();location.reload()};
+arrancar();
 </script>
 </body>
 </html>
