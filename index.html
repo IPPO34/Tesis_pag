@@ -117,11 +117,25 @@ async function getPdf(id){try{return await idbOp("readonly",s=>s.get(id))}catch(
 async function delPdf(id){try{await idbOp("readwrite",s=>s.delete(id))}catch(e){}}
 async function openPdf(id){
  const f=await getPdf(id);if(!f)return msg("No se encontró el PDF en este navegador");
- const u=URL.createObjectURL(f),o=document.createElement("div");
+ const o=document.createElement("div");
  o.style.cssText="position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)";
- o.innerHTML=`<div class="acts" style="padding:8px;margin:0"><button class="pri">Cerrar</button><a class="btn" target="_blank" rel="noopener" href="${u}" style="text-decoration:none">Abrir en pestaña nueva</a></div><iframe src="${u}" style="flex:1;border:0;width:100%"></iframe>`;
- o.querySelector("button").onclick=()=>{o.remove();URL.revokeObjectURL(u)};
- document.body.appendChild(o)
+ o.innerHTML=`<div class="acts" style="padding:8px;margin:0;align-items:center"><button class="pri">Cerrar</button><span class="m" id="pgi">Cargando…</span></div><div style="flex:1;overflow:auto;padding:8px;background:var(--bd)"></div>`;
+ o.querySelector("button").onclick=()=>o.remove();
+ document.body.appendChild(o);
+ const box=o.lastElementChild;
+ try{
+  const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;
+  o.querySelector("#pgi").textContent=pdf.numPages+" páginas";
+  for(let i=1;i<=pdf.numPages&&o.isConnected;i++){
+   const p=await pdf.getPage(i);
+   const w=Math.min(box.clientWidth-16,900),sc=w/p.getViewport({scale:1}).width,dpr=Math.min(devicePixelRatio||1,2);
+   const v=p.getViewport({scale:sc*dpr});
+   const c=document.createElement("canvas");c.width=v.width;c.height=v.height;
+   c.style.cssText="display:block;margin:0 auto 8px;width:"+w+"px;max-width:100%;height:auto;background:#fff";
+   box.appendChild(c);
+   await p.render({canvasContext:c.getContext("2d"),viewport:v}).promise
+  }
+ }catch(e){box.textContent="No se pudo mostrar el PDF."}
 }
 function show(n){["1","2","3"].forEach(k=>{$("#p"+k).classList.toggle("hide",k!=n);$("#t"+k).classList.toggle("on",k==n)})}
 ["1","2","3"].forEach(k=>$("#t"+k).onclick=()=>show(k));
